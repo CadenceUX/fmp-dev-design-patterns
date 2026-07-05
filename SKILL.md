@@ -2,23 +2,24 @@
 compatibility: Claude.ai, Claude Chat, Claude Code
 metadata:
   "Built and maintained": "Darrin Southern from CadenceUX"
-  version: "1.2"
-name: fmp-dev-gate
+  version: "1.3"
+name: fmp-dev-design-patterns
 description: |
-  FileMaker scripting rules and project configuration skill — all scripting patterns, boilerplate,
-  error handling, variable scope, loops, sub-scripts, JSON parameter passing, custom function
-  authoring (recursion, naming, exit conditions), fmxmlsnippet authoring gotchas, and code
-  delivery methods. Defines which functions from claris-filemaker-pro,
-  goya-be-plugin, and monkeybread-mbs-plugin are configured for use in this project. Use for:
-  writing and debugging FileMaker scripts, designing script architecture, error handling
-  strategies, AI integration via Generate Response from Model, and modular script workflows.
-  Does not cover script step syntax or function reference — delegates to claris-filemaker-pro.
-  Trigger when the user asks to write a FileMaker script, design a scripting workflow, debug
-  script logic, or automate a FileMaker task — even casually phrased. Always trigger when
-  "FileMaker", "Claris", "Script Workspace", or "scripting" appears in a development context.
+  FileMaker scripting rules, conventions, and project configuration skill — scripting
+  patterns, boilerplate, error handling, variable scope, loops, sub-scripts, JSON parameter
+  passing, fmxmlsnippet gotchas, code delivery methods, and a configurable design-patterns
+  layer: naming taxonomies, error-state discipline, and anti-patterns, kept as configured
+  or derived from a Save as XML audit. Defines which reference-skill functions are
+  configured for this project. Use for: writing and debugging FileMaker scripts, script
+  architecture, error handling strategies, and AI integration via Generate Response from
+  Model. Does not cover script step syntax or function reference — delegates to
+  claris-filemaker-pro. Trigger when the user asks to write a FileMaker script, design a
+  scripting workflow, debug script logic, or automate a FileMaker task — even casually
+  phrased. Always trigger when "FileMaker", "Claris", "Script Workspace", or "scripting"
+  appears in a development context.
 ---
 
-# FMP Dev Gate — Scripting Rules & Configuration (v1.2)
+# FMP Dev Design Patterns — Scripting Rules & Configuration (v1.3)
 
 You are an expert Claris FileMaker Pro developer. Your job is to help users write, debug, and
 design FileMaker scripts using correct patterns, boilerplate, and architecture — using the
@@ -34,6 +35,92 @@ object type: **`filemaker-xml`** (scripts and custom functions, `fmxmlsnippet ty
 **`filemaker-field-xml`** (field definitions for Manage Database), or **`filemaker-layout-xml`**
 (layout objects, `fmxmlsnippet type="LayoutObjectList"`). For routing across the full skill set,
 see **`fmp-dev-orchestrator`**.
+
+---
+
+## Design patterns — ask the developer first
+
+At the start of each session, before writing or reviewing any scripts, ask:
+
+> Should I follow the **configured design patterns** in this skill, or **audit a solution's
+> Save as XML export** to derive and recommend patterns for this project?
+>
+> 1. **Use the configured patterns** — apply the "Configured design patterns" section as written
+> 2. **Audit a SaXML export** — run the method in `references/saxml-pattern-audit.md` against
+>    an export you provide, present the findings as recommendations, and fold what you accept
+>    into the configured section
+> 3. **Both** — audit first, then merge accepted findings into the configured patterns
+
+Apply the developer's choice for the remainder of the session. The configured section below is
+the **developer-built layer** — it grows and changes as audit recommendations are accepted;
+treat it as project configuration, not fixed skill content, and never cite a specific
+solution's file name or statistics inside it (those belong in the audit conversation, not
+the skill).
+
+---
+
+## Configured design patterns
+
+### Naming
+
+- **Scripts**: a `Domain: Action` colon-prefix taxonomy (`Search:`, `Email:`, `Export:`,
+  `Import:`, `Report:`, `Update:`, `Validate:`, ...) so related scripts sort and group
+  together; a `| Variant` pipe suffix for variants of one action (`Search: Staff | Single`);
+  a bracket suffix like `[Mode]` for mode-driven scripts and `[OLD]` for a superseded script
+  kept for reference. If the solution organises by divider scripts (`--`) rather than
+  folders, stay consistent with it rather than introducing folders piecemeal.
+- **Fields**: dot-notation namespacing (`Entity.Purpose.Detail`), a `_g` suffix for globals,
+  and configuration globals centralised in a single control/settings table rather than
+  scattered per-table.
+- **Table occurrences**: dot-notation context paths (`Anchor.Related.Purpose`); a short
+  prefix (e.g. `xml_`) for import/staging occurrences.
+
+### Error handling
+
+- Error checks go through the custom functions `AnErrorOccurred` / `NoErrorOccurred`
+  (see Custom Functions below), extended inline where needed:
+  `AnErrorOccurred or IsEmpty ( $result ) or PatternCount ( $result ; "Exception" )`.
+- **`$$LastError` discipline**: the side-effect global those CFs set is valid only until the
+  next step of the same script. Read it immediately (e.g. into a local for logging), never
+  branch on it in another script, and don't trust it across triggers or sessions.
+
+### Script structure
+
+- Open with `Allow User Abort [ Off ]` + `Set Error Capture [ On ]` (per the session
+  preference captured under Script Boilerplate), close with an explicit
+  `Exit Script [ Text Result: ... ]`, pass structured data as JSON parameters in and a JSON
+  script result out.
+- Reserve `Halt Script` for named utility scripts called from triggers and buttons — don't
+  scatter Halt through business logic.
+
+### Anti-patterns to avoid
+
+- **Passing data or error state between scripts via `$$` globals.** A `$$` value set in one
+  script and read in another survives early exits, reruns, and (on hosted or long-lived
+  files) whole working sessions — the reader has no way to know whether it reflects the
+  current call or a stale one. Prefer script parameters in and
+  `Exit Script [ Text Result: ]` out. Where a `$$` flag is genuinely needed (halt flags,
+  UI state), pair **every setter with a clearer**, initialise it in the startup script, and
+  validate before branching on it.
+- **Sneaky `$$` setters.** Watch for globals assigned outside `Set Variable`: `Let()`
+  side effects inside custom functions, field calculations that assign `$$` variables as a
+  side effect of evaluating, and step target-variables (e.g. Insert from URL into a `$$`).
+  These make session state untraceable; also hunt casing twins (`$$Result` vs `$$result`)
+  and reads of globals nothing ever sets.
+- **Empty-comment-only scripts** — blank comment steps as spacing are fine, but scripts also
+  need real comments (purpose header, section notes), and new or changed fields get a field
+  comment.
+- **Falling off the end** — a script without an explicit `Exit Script` gives callers no
+  result to distinguish success from failure.
+- **Error capture without error checks** — `Set Error Capture [ On ]` with no subsequent
+  test just silences errors; every step that can fail gets a check immediately after it.
+- **Dead disabled steps** — delete them, or duplicate the script to `Name [OLD]` first if
+  the old logic must be kept.
+- **Speculative custom functions** — check the existing CF library before writing a new
+  one, and don't add functions nothing calls.
+
+To re-derive or extend this section from a real solution, run the audit method in
+`references/saxml-pattern-audit.md`.
 
 ---
 
@@ -203,7 +290,9 @@ Exit Script [ Text Result: "" ]
 - `$localVar` — local to the script, cleared when the script ends.
 - `$$globalVar` — shared across all scripts in the file for the current session; cleared when
   the file closes (it does **not** survive closing and reopening the file).
-- Use `Set Variable` to assign; pass `$$` vars carefully to avoid side-effects.
+- Use `Set Variable` to assign; pass `$$` vars carefully to avoid side-effects — and don't
+  use them to pass data or error state between scripts (see the `$$` anti-pattern under
+  Configured design patterns): parameters in, script result out.
 
 ### Looping Over Records
 ```
@@ -358,7 +447,10 @@ NoErrorOccurred
 Let ( $$LastError = Get ( LastError ) ; $$LastError = 0 )
 ```
 - Drop these into the standard error pattern instead of repeating `Get(LastError) ≠ 0` inline —
-  same check, shorter calls, and `$$LastError` stays set for logging afterward.
+  same check, shorter calls. Note the side effect: they assign `$$LastError`. Treat that value
+  as valid only until the next step of the same script — capture it into a local immediately
+  if it's needed for logging, and never read it from another script (see the `$$` anti-pattern
+  under Configured design patterns).
 
 ```
 optionKey

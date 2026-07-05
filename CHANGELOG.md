@@ -1,4 +1,46 @@
-# fmp-dev-gate — Changelog
+# fmp-dev-design-patterns — Changelog
+
+(Named `fmp-dev-gate` through v1.2 — renamed at v1.3.)
+
+## v1.3 — 2026-07-05
+
+Renamed to `fmp-dev-design-patterns`, with a new solution-agnostic, developer-configurable
+design-patterns layer.
+
+- **Renamed from `fmp-dev-gate` to `fmp-dev-design-patterns`** — the skill's job is the
+  design patterns the developer builds up for a project, not just gating function scope.
+  Cross-references in `fmp-dev-orchestrator` and `fmp-dev-full-script` updated in the same
+  release set. Remove any installed `fmp-dev-gate` copy.
+- **New configurable design-patterns layer**, deliberately solution-agnostic (the skill
+  never cites a specific solution's file name or statistics — those stay in the audit
+  conversation):
+  - A **session-start question** asks the developer whether to follow the configured
+    patterns or audit a solution's Save as XML export to derive recommendations (or both).
+  - **"Configured design patterns"** is the developer-built layer, seeded with generalised
+    patterns accepted from a full audit of a production FileMaker solution (2026-07-05):
+    `Domain: Action` script naming with `| Variant`/`[Mode]`/`[OLD]` markers, CF-based
+    error checks, dot-notation field/TO namespacing with `_g` globals and a central
+    control table, explicit JSON exits, `Halt Script` reserved for named utilities — plus
+    a generalised anti-patterns list (empty-comment-only scripts, missing exits, error
+    capture without checks, dead disabled steps, naming drift, speculative CFs).
+  - **New `references/saxml-pattern-audit.md`** captures the repeatable audit method: the
+    FMSaveAsXML extraction map (ScriptReference id, nested Calculation/Text, comment and
+    Set Variable target locations), the stats to compute, the `$$` set/clear/read mapping,
+    CF-hygiene rules (zero-param CFs are called without parentheses; layout calcs are out
+    of scope for the scan), and the accept/reject presentation flow.
+- **Headline anti-pattern: `$$` globals as inter-script data/error transport** (per
+  Developer). A `$$` value survives early exits, reruns, and long-lived sessions with no
+  validation that it reflects the current call. Prefer parameters in / script result out;
+  where a `$$` flag is needed, pair every setter with a clearer and initialise at startup.
+  Includes the sneaky-setter variants surfaced by the audit: `Let()` side effects in CFs,
+  field calculations assigning globals, step target-variables, casing twins, and reads of
+  globals nothing sets.
+- **`AnErrorOccurred`/`NoErrorOccurred` guidance updated**: the CFs stay (they're the
+  established idiom), but the `$$LastError` side effect is now documented with discipline —
+  valid only until the next step, capture to a local for logging, never read cross-script.
+  The previous wording praised the persistence; that's reversed.
+- README updated for the rename, the new layer, and the `.skill` double-click install
+  convention.
 
 ## v1.2 — 2026-07-01 (updated 2026-07-04)
 
