@@ -1,0 +1,39 @@
+{
+  "skill": "fmp-dev-design-patterns",
+  "version": "2.0.0",
+  "notes": "Grade each answer against must / must_not. mode=adt assumes the Claris ADT plugin is installed.",
+  "cases": [
+    {
+      "id": "write-script-adt",
+      "mode": "adt",
+      "prompt": "Write a script that marks every overdue invoice as Overdue and returns how many it changed.",
+      "must": ["error check after steps that can fail", "explicit Exit Script with a JSON or count result", "written into the file through ADT", "read back after writing"],
+      "must_not": ["fmxmlsnippet or clipboard XML", "pasting via MBS, BaseElements, agentic-fm or ProofKit"]
+    },
+    {
+      "id": "write-script-no-adt",
+      "mode": "standalone",
+      "prompt": "Write a FileMaker script that creates a new contact from a JSON parameter.",
+      "must": ["readable script steps for the developer to enter", "JSONGetElement on Get ( ScriptParameter )", "Exit Script with a result"],
+      "must_not": ["fmxmlsnippet XML"]
+    },
+    {
+      "id": "global-state",
+      "mode": "any",
+      "prompt": "My sub-script sets $$Error and the parent script checks it. Is that OK?",
+      "must": ["flags passing state between scripts via $$ globals as an anti-pattern", "parameters in and Exit Script result out instead"],
+      "must_not": ["endorses $$ globals for passing error state"]
+    },
+    {
+      "id": "ai-step",
+      "mode": "any",
+      "prompt": "Where do I set the model name when using Configure AI Account and Generate Response from Model?",
+      "must": ["the model is chosen on Generate Response from Model", "Configure AI Account has no Model parameter"],
+      "must_not": ["Configure AI Account takes a Model parameter"]
+    }
+  ],
+  "near_misses": [
+    { "id": "syntax-only", "prompt": "What are the parameters of Substitute?", "expect": "claris-filemaker-pro, not this skill" },
+    { "id": "mbs-fn", "prompt": "Which MBS function lists files in a folder?", "expect": "monkeybread-mbs-plugin, not this skill" }
+  ]
+}

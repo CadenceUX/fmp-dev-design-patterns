@@ -2,6 +2,31 @@
 
 (Named `fmp-dev-gate` through v1.2 — renamed at v1.3.)
 
+## [2.0.0] — 2026-10-11
+
+Rebuilt for the Claris Agentic Development Toolkit (ADT) and Anthropic's skill authoring best
+practices, using `cadenceux-skill-creator` 2.0.0.
+
+### Changed
+
+- **Scripts go into the file through ADT.** New "Delivering scripts to the file" section: validate
+  calculations with ADT's engine, write through ADT, read back and compare, repeat until it
+  matches. Without ADT, scripts are presented as readable steps for the developer to enter.
+- **The design-pattern audit reads the live file through ADT** (`references/pattern-audit.md`,
+  renamed from `saxml-pattern-audit.md`); the Save as XML export remains the fallback without ADT.
+- SKILL.md body cut from 690 to under 250 lines; the worked patterns moved to
+  `references/scripting-patterns.md` (with a contents list). New "Writing a script" checklist.
+- Frontmatter to the CadenceUX standard (third-person description, "Use when" and "Not for",
+  `license`, `metadata.author`); `.claude-plugin/plugin.json` added; `evals/evals.json` added.
+
+### Removed
+
+- **fmxmlsnippet authoring gotchas and the five clipboard delivery methods** (MBS, BaseElements,
+  agentic-fm, ProofKit, manual paste). ADT writes to the file directly. Summarised under
+  "Old patterns".
+- Hand-offs to the XML skills (`filemaker-xml`, `filemaker-field-xml`, `filemaker-layout-xml`),
+  the retired `fmp-dev-full-script`, and `clockwork-xml-inspector`.
+
 ## v1.3 — 2026-07-05
 
 Renamed to `fmp-dev-design-patterns`, with a new solution-agnostic, developer-configurable

@@ -1,62 +1,55 @@
 # fmp-dev-design-patterns
 
-Design-patterns and scripting-rules skill for the **`fmp-dev-orchestrator`** workflow
-(formerly `fmp-dev-gate`). Holds the scripting patterns,
-boilerplate, and a **configurable design-patterns layer** — naming taxonomies, error-state
-discipline, and anti-patterns — that the developer either keeps as configured or re-derives
-by auditing a solution's Save as XML export.
+A [Claude skill](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview)
+for writing Claris FileMaker scripts that are correct, readable and maintainable: boilerplate,
+error handling, JSON parameters and results, transactions, AI steps, custom functions, naming
+conventions and anti-patterns, plus a design-patterns layer you keep as configured or re-derive
+by auditing your own solution.
 
-Current version: **v1.3** — see [CHANGELOG.md](./CHANGELOG.md) for full version history.
+With the Claris Agentic Development Toolkit (ADT) installed, scripts are written straight into
+the FileMaker file through ADT and read back to confirm. No clipboard XML, no copy and paste.
 
 Built and maintained by [Darrin Southern](https://www.linkedin.com/in/darrin-southern/) from [CadenceUX](https://cadenceux.com.au).
 
-## What it contains
+## What it covers
 
-- **A session-start question**: follow the configured design patterns, or audit a solution's
-  SaXML export to derive and recommend patterns — the configured section is the
-  developer-built layer, updated as audit recommendations are accepted
-- **Configured design patterns** (seeded, generalised): `Domain: Action` script naming with
-  variant markers, dot-notation field/TO namespacing with `_g` globals, CF-based error
-  checks with `$$LastError` discipline, explicit exits with JSON results — plus an
-  anti-patterns list headed by `$$`-global state passing between scripts (stale-value risk,
-  sneaky setters, missing clearers)
-- **`references/saxml-pattern-audit.md`**: the repeatable audit method — extraction map for
-  the FMSaveAsXML format (with its parsing gotchas), the stats to compute, and how to
-  present findings as accept/reject recommendations
-- Script boilerplate — Allow User Abort / Set Error Capture, standard Exit Script patterns
-- Key scripting patterns — error handling, variable scope, looping, sub-scripts, JSON
-  parameter passing, scripted finds, transactions, AI/ML integration
-- A project-level summary of fmxmlsnippet authoring gotchas (delegates to the dedicated XML
-  skills for the full spec)
-- Five delivery methods for getting generated XML onto the FileMaker pasteboard
-- A placeholder "Configured Functions" section for project-specific function restrictions
+- **Session setup:** use the configured patterns, or audit your solution first (live through
+  ADT, or from a Save as XML export without it) and accept the recommendations you want.
+- **Configured design patterns:** `Domain: Action` script naming, dot-notation fields and table
+  occurrences, CF-based error checks with `$$LastError` discipline, explicit exits with JSON
+  results, and an anti-patterns list headed by passing state between scripts in `$$` globals.
+- **A script-writing checklist** with an error check after every step that can fail.
+- **Worked patterns** (`references/scripting-patterns.md`): error handling, variable scope,
+  loops, sub-scripts, JSON parameters, scripted finds, transactions, AI steps, custom functions.
+- **Delivery through ADT** with a write, read-back, compare loop.
 
-## Installing
+Exact step and function syntax comes from
+[claris-filemaker-pro](https://github.com/CadenceUX/claris-filemaker-pro-skill).
 
-**macOS (Claude desktop app):** double-click the `fmp-dev-design-patterns-v1.3.skill` file —
-it opens Claude's skill-install flow directly. (The `.skill` file is just the release zip
-renamed.)
+## Install
 
-**Claude.ai in a browser (or if double-click doesn't work):** upload the release zip via
-Settings → Customize → Skills.
+Part of the `cadenceux` plugin marketplace:
 
-If a copy of `fmp-dev-gate` is still installed, remove it — this skill replaces it under
-the new name.
+```bash
+claude plugin marketplace add https://github.com/CadenceUX/cadenceux-skills.git
+claude plugin install fmp-dev-design-patterns@cadenceux
+```
+
+On claude.ai and Cowork: Customize → Plugins → Add marketplace from GitHub →
+`CadenceUX/cadenceux-skills`. Or download the `.skill` file from the latest release and
+double-click it (macOS).
 
 ## Files
 
-```
-fmp-dev-design-patterns/
-├── SKILL.md                             — the skill itself
-├── VERSION                              — bare version string
-├── CHANGELOG.md                         — version history
-├── README.md                            — this file
-└── references/
-    └── saxml-pattern-audit.md           — the SaXML audit method
-```
+| Path | Purpose |
+|---|---|
+| `SKILL.md` | Session setup, configured patterns, boilerplate, delivery |
+| `references/scripting-patterns.md` | Worked scripting patterns |
+| `references/pattern-audit.md` | Audit method (ADT or Save as XML) |
+| `evals/evals.json` | Test cases |
 
 ## Licence
 
-[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — free to use, adapt, and redistribute with attribution.
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Use it, fork it, adapt it. Attribute it.
 
 Built and maintained by [Darrin Southern](https://www.linkedin.com/in/darrin-southern/) from [CadenceUX](https://cadenceux.com.au).

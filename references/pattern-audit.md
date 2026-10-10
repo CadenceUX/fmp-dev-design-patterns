@@ -1,18 +1,29 @@
-# SaXML pattern audit — method
+# Pattern audit — method
 
-How to derive design-pattern recommendations from a FileMaker solution's **Save a Copy as
-XML** export (`Tools → Save a Copy as XML` in FileMaker Pro with advanced tools enabled).
-Run this when the developer chooses the audit option in SKILL.md's session-start question.
-Findings are presented as **recommendations for the developer to accept or reject** — only
-accepted items get folded into SKILL.md's "Configured design patterns" section, and always
-in generalised form (no solution file names, no statistics baked into the skill).
+How to derive design-pattern recommendations from a real FileMaker solution, when the
+developer chooses the audit option in SKILL.md's session setup. Findings are
+**recommendations to accept or reject**; only accepted items go into SKILL.md's "Configured
+design patterns", always in generalised form (no solution names, no statistics).
 
-**Execution surface:** this needs code execution (Claude Code, the Agent SDK, or a
-code-execution-enabled chat) — the exports are tens of MB and the analysis is a Python
-parse, not something to eyeball. In plain Claude.ai chat, ask the developer to run the
-extraction locally or hand the audit to a Code session. For schema health, broken
-references, and unreferenced fields, `clockwork-xml-inspector` is the complementary tool —
-this audit is about *style and conventions*, not integrity.
+## Contents
+- Source: ADT (preferred) or a Save as XML export
+- Extraction — where things live in FMSaveAsXML
+- Stats to compute
+- Presenting findings
+
+## Source: ADT (preferred) or a Save as XML export
+
+**With the Claris Agentic Development Toolkit (ADT):** read the solution directly through ADT
+(script names and folders, script steps, fields, table occurrences, custom functions); its
+`fm-mcp-guide` skill names the tools. No export is needed and the data is current. Compute the
+same stats listed below from what ADT returns.
+
+**Without ADT:** use a **Save a Copy as XML** export (`Tools → Save a Copy as XML`, advanced
+tools enabled). Exports run to tens of MB, so this needs code execution (Claude Code or a
+code-execution-enabled chat) for a Python parse; in plain chat, ask the developer to run the
+extraction locally. The extraction map below applies to the export only.
+
+This audit covers style and conventions, not schema integrity.
 
 ## Extraction — where things live in FMSaveAsXML
 
@@ -67,5 +78,5 @@ Present two lists — **conventions to follow** (the majority patterns worth cod
 **anti-patterns observed** (habits new code should correct) — each item with its supporting
 numbers from the audit. After the developer accepts/rejects items, update SKILL.md's
 "Configured design patterns" in generalised wording and leave the numbers in the
-conversation. Where a finding needs deeper tooling (layout calc references, broken refs),
-point at `clockwork-xml-inspector` instead of over-claiming from this scan.
+conversation. Where a finding needs deeper analysis (layout calculation references, broken
+references), check it through ADT on the live file rather than over-claiming from this scan.
