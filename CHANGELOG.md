@@ -2,6 +2,20 @@
 
 (Named `fmp-dev-gate` through v1.2 — renamed at v1.3.)
 
+## [2.1.0] — 2026-10-11
+
+### Added
+
+- **Skill update self-check.** Once per session the skill compares its version with the repo's
+  `VERSION` and says when a newer release is out. It defers to `fmp-dev-orchestrator`'s stack
+  check when that's installed, which covers every CadenceUX skill plus Claris ADT, FileMaker Pro
+  and the ADT project. New eval case: skill-update-check.
+
+### Changed
+
+- Configured design patterns now say how they relate to ADT's `filemaker-standards` skill:
+  ADT carries the baseline; these patterns are the developer's layer on top.
+
 ## [2.0.0] — 2026-10-11
 
 Rebuilt for the Claris Agentic Development Toolkit (ADT) and Anthropic's skill authoring best

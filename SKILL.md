@@ -16,7 +16,7 @@ compatibility: >-
   Claris ADT plugin; the patterns themselves work anywhere.
 metadata:
   author: Darrin Southern, CadenceUX
-  version: "2.0.0"
+  version: "2.1.0"
 ---
 
 # FileMaker design patterns
@@ -59,6 +59,11 @@ Script progress:
 ```
 
 ## Configured design patterns
+
+With ADT installed, ADT's `filemaker-standards` skill carries Claris's baseline naming and
+design-pattern conventions. The patterns below are the developer's layer on top: where they
+differ, follow these (a project's own standards pack can override ADT's), and say so when it
+matters.
 
 ### Naming
 
@@ -259,6 +264,20 @@ differ; check each step's support matrix in `claris-filemaker-pro`.
 
 Project-specific limits on which reference-skill functions are in scope. None are configured,
 so every lookup falls through to the reference skills.
+
+## Skill update self-check
+
+Once per session, on the first request this skill handles: fetch
+`https://github.com/CadenceUX/fmp-dev-design-patterns/raw/main/VERSION` and compare it with this skill's version
+(2.1.0). If newer, start the answer with:
+
+> ⚠️ **Skill update available:** this skill is v[installed]; v[latest] is at
+> https://github.com/CadenceUX/fmp-dev-design-patterns/releases
+
+Skip silently if the fetch fails. If the skill was installed as a plugin, suggest
+`claude plugin update` (or the Plugins page on claude.ai) instead. If `fmp-dev-orchestrator` is
+installed, skip this check: its stack check covers every CadenceUX skill, plus Claris ADT,
+FileMaker Pro and the ADT project.
 
 ## Licence
 

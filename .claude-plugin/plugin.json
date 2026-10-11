@@ -1,12 +1,23 @@
 {
   "name": "fmp-dev-design-patterns",
   "displayName": "FileMaker Design Patterns",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Scripting conventions and design patterns for Claris FileMaker: boilerplate, error handling, JSON parameters, transactions, AI steps, naming and anti-patterns, with scripts written into the file through the Claris Agentic Development Toolkit (ADT).",
-  "author": { "name": "Darrin Southern", "url": "https://cadenceux.com.au" },
+  "author": {
+    "name": "Darrin Southern",
+    "url": "https://cadenceux.com.au"
+  },
   "homepage": "https://github.com/CadenceUX/fmp-dev-design-patterns",
   "repository": "https://github.com/CadenceUX/fmp-dev-design-patterns",
   "license": "CC-BY-4.0",
-  "keywords": ["filemaker", "claris", "scripting", "design-patterns", "adt"],
-  "skills": ["./"]
+  "keywords": [
+    "filemaker",
+    "claris",
+    "scripting",
+    "design-patterns",
+    "adt"
+  ],
+  "skills": [
+    "./"
+  ]
 }
