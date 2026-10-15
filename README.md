@@ -28,16 +28,26 @@ Exact step and function syntax comes from
 
 ## Install
 
-Part of the `cadenceux` plugin marketplace:
+**Claude Code** (from the `cadenceux` plugin marketplace):
 
 ```bash
 claude plugin marketplace add https://github.com/CadenceUX/cadenceux-skills.git
 claude plugin install fmp-dev-design-patterns@cadenceux
 ```
 
-On claude.ai and Cowork: Customize → Plugins → Add marketplace from GitHub →
-`CadenceUX/cadenceux-skills`. Or download the `.skill` file from the latest release and
-double-click it (macOS).
+**claude.ai and Cowork:** Customize → Plugins → Add marketplace from GitHub →
+`CadenceUX/cadenceux-skills`, then install **fmp-dev-design-patterns**.
+
+**Claude desktop app (macOS):** download [`fmp-dev-design-patterns.skill`](https://github.com/CadenceUX/fmp-dev-design-patterns/releases/latest/download/fmp-dev-design-patterns.skill) and
+double-click it.
+
+**Claude.ai in a browser, as a single skill:** Customize → Skills → upload
+[`fmp-dev-design-patterns.zip`](https://github.com/CadenceUX/fmp-dev-design-patterns/releases/latest/download/fmp-dev-design-patterns.zip).
+
+> Both files are attached to the latest [release](https://github.com/CadenceUX/fmp-dev-design-patterns/releases).
+> Don't use GitHub's green **Code → Download ZIP** button or a release's **Source code (zip)**:
+> those are snapshots of the repository, not a packaged skill, and Claude won't install them
+> as one.
 
 ## Files
 

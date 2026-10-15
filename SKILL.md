@@ -16,7 +16,7 @@ compatibility: >-
   Claris ADT plugin; the patterns themselves work anywhere.
 metadata:
   author: Darrin Southern, CadenceUX
-  version: "2.1.0"
+  version: "2.1.1"
 ---
 
 # FileMaker design patterns
@@ -269,7 +269,7 @@ so every lookup falls through to the reference skills.
 
 Once per session, on the first request this skill handles: fetch
 `https://github.com/CadenceUX/fmp-dev-design-patterns/raw/main/VERSION` and compare it with this skill's version
-(2.1.0). If newer, start the answer with:
+(2.1.1). If newer, start the answer with:
 
 > ⚠️ **Skill update available:** this skill is v[installed]; v[latest] is at
 > https://github.com/CadenceUX/fmp-dev-design-patterns/releases
