@@ -1,24 +1,24 @@
 # Pattern audit — method
 
-How to derive design-pattern recommendations from a real FileMaker solution, when the
-developer chooses the audit option in SKILL.md's session setup. Findings are
-**recommendations to accept or reject**; only accepted items go into SKILL.md's "Configured
-design patterns", always in generalised form (no solution names, no statistics).
+How to derive a solution's conventions from the solution itself, so a client's own standards
+can be written down rather than CadenceUX's imposed. Findings are **recommendations to accept or
+reject**; only accepted items become rules, in the client's `.adk/standards/` files or their own
+pack, always in generalised form (no solution names, no statistics).
 
 ## Contents
-- Source: ADT (preferred) or a Save as XML export
+- Source: ADK (preferred) or a Save as XML export
 - Extraction — where things live in FMSaveAsXML
 - Stats to compute
 - Presenting findings
 
-## Source: ADT (preferred) or a Save as XML export
+## Source: ADK (preferred) or a Save as XML export
 
-**With the Claris Agentic Development Toolkit (ADT):** read the solution directly through ADT
-(script names and folders, script steps, fields, table occurrences, custom functions); its
-`fm-mcp-guide` skill names the tools. No export is needed and the data is current. Compute the
-same stats listed below from what ADT returns.
+**With Claris's FileMaker Agentic Development Kit (ADK):** read the solution directly through
+ADK (script names and folders, script steps, fields, table occurrences, custom functions); its
+`fm-cli` and `fm-mcp-guide` skills name the tools. No export is needed and the data is current.
+Compute the same stats listed below from what ADK returns.
 
-**Without ADT:** use a **Save a Copy as XML** export (`Tools → Save a Copy as XML`, advanced
+**Without ADK:** use a **Save a Copy as XML** export (`Tools → Save a Copy as XML`, advanced
 tools enabled). Exports run to tens of MB, so this needs code execution (Claude Code or a
 code-execution-enabled chat) for a Python parse; in plain chat, ask the developer to run the
 extraction locally. The extraction map below applies to the export only.
@@ -72,11 +72,26 @@ when unknown:
 9. **Secrets**: credential-like literals or credential-bearing globals/fields in script
    calcs — report to the developer as a security observation, separate from style.
 
-## Presenting findings
+## Presenting findings and writing the rules
 
-Present two lists — **conventions to follow** (the majority patterns worth codifying) and
-**anti-patterns observed** (habits new code should correct) — each item with its supporting
-numbers from the audit. After the developer accepts/rejects items, update SKILL.md's
-"Configured design patterns" in generalised wording and leave the numbers in the
-conversation. Where a finding needs deeper analysis (layout calculation references, broken
-references), check it through ADT on the live file rather than over-claiming from this scan.
+Present two lists, each item with its supporting numbers from the audit:
+
+- **Conventions to follow**: the majority patterns worth codifying.
+- **Anti-patterns observed**: habits new code should correct.
+
+Where a finding needs deeper analysis (layout calculation references, broken references),
+check it through ADK on the live file rather than over-claiming from this scan.
+
+When the developer has accepted items, draft the rules for the file each belongs in:
+
+| Accepted item | File | How it combines |
+|---|---|---|
+| A name for a kind of element | `naming.md`, under that element's heading | Rule by rule: write the complete rule for that kind |
+| A shape every script, table or layout takes | `patterns.md`, one section each | Section by section: a section replaces the layer below's section with the same heading |
+| A habit worth pointing out but not enforcing | `advisory.md` | Added; used only in reviews |
+
+Write only what differs from the layers below (ADK's Baseline, and the pack the project
+follows). Check every rule against Claris's checklist in SKILL.md ("Deriving a client's
+standards"). Then write them into the project's `.adk/standards/` or a new pack, as SKILL.md
+describes, and run `adk standards` to confirm they resolved. Leave the audit numbers in the
+conversation, not in the rules.

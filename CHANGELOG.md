@@ -2,6 +2,65 @@
 
 (Named `fmp-dev-gate` through v1.2 — renamed at v1.3.)
 
+## [3.0.0] — 2026-11-19
+
+CadenceUX's conventions move into the `cadenceux` standards pack for Claris's FileMaker Agentic
+Development Kit (ADK), using `cadenceux-skill-creator` 2.4.2. Major version: the configured
+patterns and the session-setup questions are gone from this file.
+
+### Added
+
+- **The `cadenceux` pack**, published as the `cadenceux-filemaker-standards` plugin (1.0.0) in
+  the `cadenceux` marketplace, with a copy in `references/cadenceux-pack/`. `naming.md`,
+  `patterns.md` and `advisory.md` restate the 2.x conventions as rules an agent can apply, over
+  ADK's Baseline: `Domain: Action` script names, dot-notation fields and table occurrences,
+  `_g` globals, the CadenceUX script header, script layout, `AnErrorOccurred` error handling,
+  JSON script results (`status`, `errorCode`, `message`, `data`), Halt Script, the Settings
+  table, and the anti-patterns as review advice.
+- **Where the conventions apply:** ADK in Claude Code (`adk standards use cadenceux`), ADK in
+  another harness (copy the pack into `.adk/standards/`), no ADK (apply the pack over
+  `references/baseline-summary.md`), or a client's own conventions.
+- **Deriving a client's standards:** the audit now ends in draft `naming.md`, `patterns.md` and
+  `advisory.md` rules, written to the project's `.adk/standards/` or a client pack, checked
+  against Claris's checklist for rules an agent can carry out.
+- `references/baseline-summary.md`: the ADK Baseline rules the pack builds on, in this skill's
+  words, for work without ADK.
+- `maintainer/check_pack_sync.sh`: confirms this skill's pack copy matches the published pack.
+- Evals: `follow-pack`, `name-script`, `client-pack`.
+
+### Changed
+
+- ADT is now ADK throughout. The script-writing checklist, delivery loop and review guidance
+  follow the layers ADK resolves.
+- The worked error-handling pattern uses the pack's `AnErrorOccurred` check and JSON result.
+
+### Decisions made writing the pack (review before projects adopt it)
+
+Where 2.x offered options or left a choice open, the pack picks one default, as Claris's rules
+require:
+
+- Script domains: the 2.x list plus `Create`, `Delete`, `Navigate`, `Print` and `Utility`, and
+  the base table's name when none fits.
+- Fields: dot-notation namespaces (`Address.City`), as 2.x stated; a global calculation is
+  `_calc_g`.
+- Table occurrences: the default occurrence keeps the base table's name; import and staging
+  occurrences use a source prefix, `imp_` when the source has no short name.
+- Script header: the 2.x boilerplate (abort and error capture first, then `PURPOSE`), plus
+  `Called by:`, and `PARAMETERS` and `RETURNS` lines when they apply.
+- Script results: one JSON shape for every reporting script, replacing the 2.x menu of `""`,
+  `"SUCCESS"`, `"ERROR:"` text and JSON.
+- Configuration globals live in a one-record `Settings` table.
+
+### Verified
+
+- The pack resolves in ADK 0.16.0: `adk standards list` shows `cadenceux 1.0.0`;
+  `adk standards use cadenceux` records it; `adk standards` shows Baseline then Pack for each
+  file.
+- Every formula the pack prescribes evaluated on the FileMaker 26.1.1 engine.
+- Evals: 4 cases on Haiku, Sonnet and Opus, all passing (2.1.1 baseline about 1.5 of 4);
+  see `evals/results-2026-11-19-v3.0.0.md`. One pack ambiguity Opus found was fixed and re-checked.
+- `validate_skill.py` clean; `cadenceux-github` scanners clean.
+
 ## [2.1.1] — 2026-10-16
 
 Packaging fix for GitHub installs, using `cadenceux-skill-creator` 2.1.2. No change to the skill's instructions or reference data.

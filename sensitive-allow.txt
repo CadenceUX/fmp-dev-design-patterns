@@ -1,0 +1,2 @@
+# Reviewed placeholder in a worked example, not a real account.
+Account Name: "myOpenAI"

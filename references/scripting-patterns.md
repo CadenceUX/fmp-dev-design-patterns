@@ -1,8 +1,8 @@
 # Scripting patterns
 
 Worked patterns for common FileMaker scripting tasks. Every script follows the session's
-boilerplate choice from SKILL.md (Allow User Abort / Set Error Capture) and closes with an
-explicit `Exit Script`. For step and function syntax, use `claris-filemaker-pro`.
+header from the pack's `patterns.md` ("Script commenting headers") and closes with an explicit
+`Exit Script`. For step and function syntax, use `claris-filemaker-pro`.
 
 ## Contents
 - Error handling (standard pattern)
@@ -21,17 +21,29 @@ explicit `Exit Script`. For step and function syntax, use `claris-filemaker-pro`
 Allow User Abort [ Off ]
 Set Error Capture [ On ]
 
-<your script step here>
-If [ Get(LastError) ≠ 0 ]
-    Set Variable [ $error ; Value: Get(LastError) ]
-    Show Custom Dialog [ "Error: " & $error ]
-    Exit Script [ Text Result: "ERROR:" & $error ]
+# PURPOSE: Mark the current invoice as sent. Called by: Email: Invoice To Contact
+
+# Update the invoice
+Set Field [ Invoice::Status ; "Sent" ]
+If [ AnErrorOccurred ]
+    Exit Script [ Text Result: JSONSetElement ( "{}" ;
+        [ "status" ; "ERROR" ; JSONString ] ;
+        [ "errorCode" ; $$LastError ; JSONNumber ] ;
+        [ "message" ; "Couldn't set the invoice status" ; JSONString ] ) ]
+End If
+Commit Records/Requests [ With dialog: Off ]
+If [ AnErrorOccurred ]
+    Exit Script [ Text Result: JSONSetElement ( "{}" ;
+        [ "status" ; "ERROR" ; JSONString ] ;
+        [ "errorCode" ; $$LastError ; JSONNumber ] ;
+        [ "message" ; "Couldn't commit the invoice" ; JSONString ] ) ]
 End If
 
-Exit Script [ Text Result: "" ]
+Exit Script [ Text Result: JSONSetElement ( "{}" ; [ "status" ; "SUCCESS" ; JSONString ] ; [ "errorCode" ; 0 ; JSONNumber ] ) ]
 ```
 
-- Use `Get(LastError)` immediately after the step — it resets on the next step.
+- `AnErrorOccurred` reads `Get ( LastError )` immediately after the step, because it resets on
+  the next step. The pack's "Error handling" section has its definition.
 - Use `Set Error Logging [ On ]` during development — it logs script errors (timestamp, script
   name, step, error code) to `ScriptErrors.log` in the user's Documents folder, not to a console.
   Logging stays on for all scripts in the file until turned off or the file closes.
@@ -41,7 +53,7 @@ Exit Script [ Text Result: "" ]
 - `$$globalVar` — shared across all scripts in the file for the current session; cleared when
   the file closes (it does **not** survive closing and reopening the file).
 - Use `Set Variable` to assign; pass `$$` vars carefully to avoid side-effects — and don't
-  use them to pass data or error state between scripts (see the `$$` anti-pattern in SKILL.md): parameters in, script result out.
+  use them to pass data or error state between scripts (see "Global variables" in the pack's `advisory.md`): parameters in, script result out.
 
 ## Looping Over Records
 ```
@@ -198,8 +210,8 @@ Let ( $$LastError = Get ( LastError ) ; $$LastError = 0 )
 - Drop these into the standard error pattern instead of repeating `Get(LastError) ≠ 0` inline —
   same check, shorter calls. Note the side effect: they assign `$$LastError`. Treat that value
   as valid only until the next step of the same script — capture it into a local immediately
-  if it's needed for logging, and never read it from another script (see the `$$` anti-pattern
-  in SKILL.md).
+  if it's needed for logging, and never read it from another script (see "Global variables" in
+  the pack's `advisory.md`).
 
 ```
 optionKey
@@ -220,5 +232,5 @@ GetNthRecord ( Field ; Get(ActivePortalRowNumber) - 1 )
 
 For calculation function syntax used above (`Get`, `Let`, `Case`, `GetNthRecord`, `SetRecursion`,
 `While`), use **`claris-filemaker-pro`**. To create or edit a custom function in the file, use
-ADT (see "Delivering scripts to the file" in SKILL.md).
+ADK (see "Delivering scripts to the file" in SKILL.md).
 

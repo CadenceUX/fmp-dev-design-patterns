@@ -1,16 +1,16 @@
 {
   "skill": "fmp-dev-design-patterns",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "notes": "Grade each answer against must / must_not. mode=adt assumes the Claris ADT plugin is installed.",
   "cases": [
     {
-      "id": "write-script-adt",
-      "mode": "adt",
+      "id": "write-script-adk",
+      "mode": "adk",
       "prompt": "Write a script that marks every overdue invoice as Overdue and returns how many it changed.",
       "must": [
         "error check after steps that can fail",
         "explicit Exit Script with a JSON or count result",
-        "written into the file through ADT",
+        "written into the file through ADK",
         "read back after writing"
       ],
       "must_not": [
@@ -19,7 +19,7 @@
       ]
     },
     {
-      "id": "write-script-no-adt",
+      "id": "write-script-no-adk",
       "mode": "standalone",
       "prompt": "Write a FileMaker script that creates a new contact from a JSON parameter.",
       "must": [
@@ -66,6 +66,51 @@
       "must_not": [
         "repeats the notice later in the session",
         "blocks the task if the fetch fails"
+      ]
+    },
+    {
+      "id": "follow-pack",
+      "mode": "adk",
+      "prompt": "I've installed ADK. How do I make my new FileMaker project use the CadenceUX naming and script conventions, and how do I check it's working?",
+      "must": [
+        "Installs cadenceux-filemaker-standards@cadenceux if adk standards list lacks it",
+        "Runs adk standards use cadenceux (pack name cadenceux, not the plugin name)",
+        "Checks with adk standards that naming.md and patterns.md show Baseline then Pack",
+        "Mentions copying the pack files into .adk/standards/ for Cursor, Codex or Gemini CLI"
+      ],
+      "must_not": [
+        "Edits adk.json by hand",
+        "Says the pack renames existing objects"
+      ]
+    },
+    {
+      "id": "name-script",
+      "mode": "any",
+      "prompt": "What should I call a script that emails an invoice to its contact, and a second version of it that sends a batch? Use the CadenceUX conventions.",
+      "must": [
+        "Domain: Action form: Email: Invoice To Contact, colon and one space, Title Case",
+        "Because the action now has two versions, both carry a variant: Email: Invoice To Contact | Single and Email: Invoice To Contact | Batch (space, pipe, space)",
+        "Parameters go on the header's PARAMETERS line, not in the name"
+      ],
+      "must_not": [
+        "Email Invoice To Contact with no domain colon",
+        "Uses an underscore or hyphen separator",
+        "Puts the parameter signature in parentheses in the name"
+      ]
+    },
+    {
+      "id": "client-pack",
+      "mode": "adk",
+      "prompt": "My client's existing solution uses its own naming. Can you work out their conventions and set them up so the agent follows them in future?",
+      "must": [
+        "Audits the solution (through ADK, or a Save as XML export) and presents conventions and anti-patterns with supporting numbers for the developer to accept",
+        "Writes accepted rules to the project's .adk/standards/ (adk standards init) or a client pack (adk standards init --pack), only where they differ from the layers below",
+        "Applies Claris's checklist: one result, a default for every choice, no 'consistent with the existing file'",
+        "Keeps the client's name and statistics out of the CadenceUX pack"
+      ],
+      "must_not": [
+        "Imposes the cadenceux pack on the client",
+        "Renames existing objects without being asked"
       ]
     }
   ],

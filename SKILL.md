@@ -1,47 +1,66 @@
 ---
 name: fmp-dev-design-patterns
 description: >-
-  Scripting conventions and design patterns for Claris FileMaker: script boilerplate, error
-  handling, variable scope, loops, sub-scripts, JSON parameters and results, transactions,
-  AI steps, custom functions, naming taxonomies and anti-patterns, plus a configurable
-  design-patterns layer the developer keeps as written or re-derives by auditing a solution.
-  With the Claris Agentic Development Toolkit (ADT) installed, scripts are written into the
-  file through ADT rather than as clipboard XML. Use when writing, reviewing, refactoring or
-  debugging FileMaker scripts, designing script architecture, or setting project conventions,
-  even when phrased casually ("write a script that…"). Not for exact step or function syntax
-  (claris-filemaker-pro) or plugin functions (the plugin skills).
+  Scripting conventions and design patterns for Claris FileMaker: script structure, error
+  handling, variable scope, loops, sub-scripts, JSON parameters and results, transactions, AI
+  steps, custom functions, naming and anti-patterns. CadenceUX's conventions ship as the
+  cadenceux standards pack for Claris's FileMaker Agentic Development Kit (ADK); this skill
+  applies them, writes and reviews scripts with them, works without ADK, and audits an
+  existing solution to derive a client's own standards pack. Use when writing, reviewing,
+  refactoring or debugging FileMaker scripts, setting or changing a project's conventions,
+  choosing or writing a standards pack, or asking why a naming or script rule exists. Not for
+  exact step or function syntax (claris-filemaker-pro) or plug-in functions (the plug-in
+  skills).
 license: CC-BY-4.0
 compatibility: >-
-  Claude.ai, Claude Desktop, Cowork and Claude Code. Writing scripts into the file needs the
-  Claris ADT plugin; the patterns themselves work anywhere.
+  Claude.ai, Claude Desktop, Cowork and Claude Code, and any harness that reads skills.
+  Following the pack and writing scripts into the file need ADK (FileMaker Pro 26.1 or later);
+  the patterns themselves work anywhere.
 metadata:
   author: Darrin Southern, CadenceUX
-  version: "2.1.1"
+  version: "3.0.0"
 ---
 
 # FileMaker design patterns
 
-Conventions and patterns for writing FileMaker scripts that are correct, readable and
-maintainable by Developer Next. This skill owns *how* scripts are structured; exact step and
-function syntax comes from `claris-filemaker-pro`, plugin functions from `goya-be-plugin`,
-`monkeybread-mbs-plugin` and `beezwax-bbox-plugin`, and routing across the set from
-`fmp-dev-orchestrator`.
+Conventions and patterns for FileMaker scripts that are correct, readable and maintainable by
+Developer Next. This skill owns *how* scripts and schema are shaped; exact step and function
+syntax comes from `claris-filemaker-pro`, plug-in functions from `goya-be-plugin`,
+`monkeybread-mbs-plugin` and `beezwax-bbox-plugin`.
 
-## Session setup
+## Requirements
 
-Ask both questions once, at the start, and apply the answers for the session.
+| Kind | Name | Used for | Surfaces |
+|---|---|---|---|
+| Plugin | `cadenceux-filemaker-standards@cadenceux` | The `cadenceux` standards pack, for ADK projects | Claude Code |
+| CLI | `adk` (ADK) | `adk standards` status, follow and init | Claude Code or any harness with a shell |
+| Path | `.adk/standards/` in an ADK project | A project's own rules, or the pack copied for other harnesses | Any harness with file access |
+| API | `raw.githubusercontent.com` (public, no key) | This skill's version check | Any surface that can fetch |
 
-> **Design patterns:** should I (1) apply the configured patterns below, (2) audit this
-> solution first and recommend patterns, or (3) audit, then merge what you accept into the
-> configured patterns?
+Without ADK or a shell, the skill answers from its own files.
 
-The audit method (through ADT on the live file, or from a Save as XML export without ADT) is
-in [references/pattern-audit.md](references/pattern-audit.md). Never write a specific
-solution's name or statistics into the configured section; it's generalised project
-configuration.
+## Where the conventions live
 
-> **Opening steps:** should I (1) always add `Allow User Abort [ Off ]` and
-> `Set Error Capture [ On ]`, (2) ask each time, or (3) something else?
+CadenceUX's conventions are **the `cadenceux` standards pack**, applied in layers by ADK:
+ADK's built-in Baseline first, then the pack, then the project's own `.adk/standards/` files.
+A later layer wins only where it says something about the same thing. This skill carries a
+copy of the pack in [references/cadenceux-pack/](references/cadenceux-pack/naming.md):
+[naming.md](references/cadenceux-pack/naming.md),
+[patterns.md](references/cadenceux-pack/patterns.md) and
+[advisory.md](references/cadenceux-pack/advisory.md). They are identical to the published pack.
+
+Work out which situation you're in, once per session:
+
+| Situation | How the conventions apply |
+|---|---|
+| **ADK in Claude Code** | Check `adk standards` in the project. If it follows no pack and the developer wants CadenceUX's conventions: install `cadenceux-filemaker-standards@cadenceux` if `adk standards list` lacks it, then `adk standards use cadenceux`. ADK's `filemaker-standards` skill then applies the layers; follow it. |
+| **ADK in another harness** (Cursor, Codex, Gemini CLI) | Packs install only through Claude Code. Copy the three files from `references/cadenceux-pack/` into the project's `.adk/standards/` (ask first if files are already there). ADK reads them as the project's own rules. |
+| **No ADK** (chat, FileMaker 26.0.3 or earlier) | Apply the pack files yourself, over the Baseline rules summarised in [references/baseline-summary.md](references/baseline-summary.md). |
+| **A client with its own conventions** | Follow their pack or `.adk/standards/` files, not CadenceUX's. To write them one, see "Deriving a client's standards" below. |
+
+Say which layers apply in your first reply about FileMaker work, and every open choice you
+settled. **Generate with `naming.md` and `patterns.md`; use `advisory.md` only when reviewing**,
+and call those points advisory.
 
 ## Writing a script
 
@@ -49,235 +68,105 @@ Copy this checklist and work through it:
 
 ```
 Script progress:
-- [ ] Purpose comment and section plan
-- [ ] Opening steps per the session choice
-- [ ] Every step that can fail followed by an error check
-- [ ] Parameters in as JSON, explicit Exit Script with a result out
-- [ ] Step and function syntax confirmed with claris-filemaker-pro (or ADT's engine)
-- [ ] Anti-patterns list checked
-- [ ] Delivered (ADT, or as steps for the developer) and read back
+- [ ] Standards resolved (which layers apply) and the header from "Script commenting headers"
+- [ ] Name per the Scripts rules in naming.md (Domain: Action)
+- [ ] Sections separated by blank lines, each with a one-line comment
+- [ ] Every step that can fail followed by an error check (AnErrorOccurred)
+- [ ] Parameters in as JSON; a JSON script result out, or "" when nothing to report
+- [ ] Step and function syntax confirmed with claris-filemaker-pro (or ADK's engine)
+- [ ] advisory.md anti-patterns avoided
+- [ ] Delivered (ADK, or as steps for the developer) and read back
 ```
-
-## Configured design patterns
-
-With ADT installed, ADT's `filemaker-standards` skill carries Claris's baseline naming and
-design-pattern conventions. The patterns below are the developer's layer on top: where they
-differ, follow these (a project's own standards pack can override ADT's), and say so when it
-matters.
-
-### Naming
-
-- **Scripts**: a `Domain: Action` colon-prefix taxonomy (`Search:`, `Email:`, `Export:`,
-  `Import:`, `Report:`, `Update:`, `Validate:`, ...) so related scripts sort and group
-  together; a `| Variant` pipe suffix for variants of one action (`Search: Staff | Single`);
-  a bracket suffix like `[Mode]` for mode-driven scripts and `[OLD]` for a superseded script
-  kept for reference. If the solution organises by divider scripts (`--`) rather than
-  folders, stay consistent with it rather than introducing folders piecemeal.
-- **Fields**: dot-notation namespacing (`Entity.Purpose.Detail`), a `_g` suffix for globals,
-  and configuration globals centralised in a single control/settings table rather than
-  scattered per-table.
-- **Table occurrences**: dot-notation context paths (`Anchor.Related.Purpose`); a short
-  prefix (e.g. `xml_`) for import/staging occurrences.
-
-### Error handling
-
-- Error checks go through the custom functions `AnErrorOccurred` / `NoErrorOccurred`
-  (see Custom Functions below), extended inline where needed:
-  `AnErrorOccurred or IsEmpty ( $result ) or PatternCount ( $result ; "Exception" )`.
-- **`$$LastError` discipline**: the side-effect global those CFs set is valid only until the
-  next step of the same script. Read it immediately (e.g. into a local for logging), never
-  branch on it in another script, and don't trust it across triggers or sessions.
-
-### Script structure
-
-- Open with `Allow User Abort [ Off ]` + `Set Error Capture [ On ]` (per the session
-  preference captured under Script Boilerplate), close with an explicit
-  `Exit Script [ Text Result: ... ]`, pass structured data as JSON parameters in and a JSON
-  script result out.
-- Reserve `Halt Script` for named utility scripts called from triggers and buttons — don't
-  scatter Halt through business logic.
-
-### Anti-patterns to avoid
-
-- **Passing data or error state between scripts via `$$` globals.** A `$$` value set in one
-  script and read in another survives early exits, reruns, and (on hosted or long-lived
-  files) whole working sessions — the reader has no way to know whether it reflects the
-  current call or a stale one. Prefer script parameters in and
-  `Exit Script [ Text Result: ]` out. Where a `$$` flag is genuinely needed (halt flags,
-  UI state), pair **every setter with a clearer**, initialise it in the startup script, and
-  validate before branching on it.
-- **Sneaky `$$` setters.** Watch for globals assigned outside `Set Variable`: `Let()`
-  side effects inside custom functions, field calculations that assign `$$` variables as a
-  side effect of evaluating, and step target-variables (e.g. Insert from URL into a `$$`).
-  These make session state untraceable; also hunt casing twins (`$$Result` vs `$$result`)
-  and reads of globals nothing ever sets.
-- **Empty-comment-only scripts** — blank comment steps as spacing are fine, but scripts also
-  need real comments (purpose header, section notes), and new or changed fields get a field
-  comment.
-- **Falling off the end** — a script without an explicit `Exit Script` gives callers no
-  result to distinguish success from failure.
-- **Error capture without error checks** — `Set Error Capture [ On ]` with no subsequent
-  test just silences errors; every step that can fail gets a check immediately after it.
-- **Dead disabled steps** — delete them, or duplicate the script to `Name [OLD]` first if
-  the old logic must be kept.
-- **Speculative custom functions** — check the existing CF library before writing a new
-  one, and don't add functions nothing calls.
-
-## Script boilerplate
-
-```
-Allow User Abort [ Off ]
-Set Error Capture [ On ]
-
-# PURPOSE: what this script does and who calls it.
-
-# ... script body ...
-
-Exit Script [ Text Result: "" ]
-```
-
-- `Allow User Abort [ Off ]` stops Escape/⌘. leaving records uncommitted or transactions
-  open; turn it on only where a long process offers a deliberate cancel.
-- `Set Error Capture [ On ]` silences FileMaker's dialogs so the script handles errors, which
-  only works if every step that can fail is followed by a `Get ( LastError )` check (it resets on
-  the next step).
-
-## Exit Script
-
-Every script should close with an explicit `Exit Script [ Text Result: ... ]` step — not by
-falling off the end. When a script ends without an explicit exit, FileMaker returns an empty
-result and gives no indication whether it completed normally or stopped early. An explicit
-`Exit Script` makes the termination point clear and allows a result value to be passed back
-to any calling script.
-
-**Reading the result in a calling script:**
-```
-Perform Script [ "MyScript" ; Parameter: $params ]
-Set Variable [ $result ; Value: Get(ScriptResult) ]
-```
-
-`Get(ScriptResult)` reads whatever string was passed in the last `Exit Script [ Text Result: ]`
-of the called script. It returns empty if no result was set or if the script ended without an
-explicit exit.
-
-**Common result patterns:**
-
-| Use case | Text Result value |
-|---|---|
-| Script has no meaningful result | `""` (empty string) |
-| Simple success/failure | `"SUCCESS"` or `"ERROR"` |
-| Error with code | `"ERROR:" & Get(LastError)` |
-| Structured result | A JSON object built with `JSONSetElement` |
-
-**Using JSON for structured results:**
-```
-Exit Script [ Text Result:
-    JSONSetElement ( "{}" ;
-        ["status" ; "SUCCESS" ; JSONString] ;
-        ["recordId" ; Get(RecordID) ; JSONNumber]
-    )
-]
-```
-The caller reads individual fields with `JSONGetElement ( Get(ScriptResult) ; "status" )`.
-
-**Early exit on error:**
-`Exit Script` can appear anywhere in a script — not just at the end. The standard error pattern
-exits early with an error result so the caller knows the script did not complete:
-```
-If [ Get(LastError) ≠ 0 ]
-    Exit Script [ Text Result: "ERROR:" & Get(LastError) ]
-End If
-```
-
-### Blank lines mark section boundaries, not every step
-
-A blank line separates **logical sections** of a script — it is not inserted between every
-individual step. Steps that form one tightly-related unit of work (a block of `Set Variable`
-setup lines, the full body of a `Loop`, a run of `Set Field` calls building one record) stay
-together with no blank lines between them. Add a blank line only at the boundary where one
-section ends and the next begins (header → purpose comment → navigation → variable setup →
-main loop/body → exit).
-
-```
-Allow User Abort [ Off ]
-Set Error Capture [ On ]
-
-# PURPOSE: Create 20 sample Products records for testing.
-
-Go to Layout [ "Product Details" (Products) ; Animation: None ]
-
-Set Variable [ $categories ; Value: List ( "Engine" ; "Brakes" ; "Suspension" ; "Electrical" ; "Body" ) ]
-Set Variable [ $manufacturers ; Value: List ( "Bosch" ; "Denso" ; "ACDelco" ; "Moog" ; "Gates" ) ]
-Set Variable [ $i ; Value: 1 ]
-
-Loop [ Flush: Always ]
-    Exit Loop If [ $i > 20 ]
-    New Record/Request
-    Set Field [ Products::Name ; "Sample Part " & $i ]
-    Set Field [ Products::Category ; GetValue ( $categories ; Mod ( $i - 1 ; 5 ) + 1 ) ]
-    Commit Records/Requests [ With dialog: Off ]
-    Set Variable [ $i ; Value: $i + 1 ]
-End Loop
-
-Exit Script [ Text Result: "" ]
-```
-
-## Patterns
 
 Worked patterns for error handling, variable scope, loops, sub-scripts, JSON parameters,
-scripted finds, transactions, AI steps and custom functions:
+scripted finds, transactions, AI steps and custom functions are in
 [references/scripting-patterns.md](references/scripting-patterns.md).
 
 ## Delivering scripts to the file
 
-**With ADT installed (the default):** write the script into the file through ADT. ADT's
-`fm-mcp-guide` skill names the tool for creating or editing scripts, custom functions and
-layouts. Then close the loop:
+**With ADK:** write the script into the file through ADK (`fm-cli`, or the tool
+`fm-mcp-guide` names), then close the loop:
 
-1. Validate every calculation with ADT's engine before writing (see `claris-filemaker-pro`'s
-   ADT mode).
-2. Write the script through ADT.
-3. Read it back through ADT and compare it with the intended steps.
+1. Validate every calculation on ADK's engine before writing (`claris-filemaker-pro`'s ADK
+   mode).
+2. Write the script.
+3. Read it back and compare it with the intended steps.
 4. If anything differs, fix and repeat. Report done only when the read-back matches.
 
-**Without ADT:** present the script as readable steps, in the format used throughout this
-skill, for the developer to enter in Script Workspace. Mention that ADT can write it directly
-once installed. Don't generate fmxmlsnippet or clipboard XML.
+**Without ADK:** present the script as readable steps, in the format used throughout this skill,
+for the developer to enter in Script Workspace, and mention that ADK can write it directly.
+Never generate fmxmlsnippet or clipboard XML.
+
+## Reviewing a script or a solution
+
+Review against the layers that apply: `naming.md` and `patterns.md` as rules, `advisory.md` as
+suggestions. Name the layer and the rule for each finding ("Pack naming.md, Scripts: Domain:
+Action"). Standards change what is created and reviewed from now on; never rename or rewrite
+existing objects unless the developer asks.
+
+## Deriving a client's standards
+
+When a client's solution has its own conventions, derive them rather than imposing
+CadenceUX's. The method (through ADK on the live file, or from a Save a Copy as XML export
+without ADK) is in [references/pattern-audit.md](references/pattern-audit.md). It ends with
+draft `naming.md`, `patterns.md` and `advisory.md` text for the developer to accept, and then:
+
+- **One project:** write the accepted rules into that project's `.adk/standards/` (create the
+  files with `adk standards init`). Only rules that differ from the layers below.
+- **Several projects:** a pack. `adk standards init --pack <name> --dir <folder>` writes the
+  skeleton; ADK's `filemaker-standards` skill (its `authoring-packs.md`) covers publishing.
+  The pack name is permanent once projects follow it.
+
+Every rule must pass Claris's checklist before it goes in: one result when applied to an empty
+file; never "consistent with the existing file"; a default for every choice; every category
+that carries a rule defined; case, plurals, prefixes and separators stated in a sentence. Never
+write a client's name or statistics into the CadenceUX pack.
+
+## Platform differences
+
+Steps unsupported on a client (FileMaker Go, WebDirect, Server, Data API) are skipped and return
+error 3. Branch with `Get ( SystemPlatform )` or `Get ( Device )` where behaviour must differ;
+check each step's support in `claris-filemaker-pro`.
 
 ## Old patterns
 
 <details>
-<summary>Clipboard XML delivery (retired in 2.0.0)</summary>
+<summary>Configured design patterns in this file (retired in 3.0.0)</summary>
 
-Versions 1.x generated `fmxmlsnippet` XML and pushed it to the pasteboard through the MBS or
-BaseElements plugins, agentic-fm or ProofKit, with a manual paste into Script Workspace. ADT
-writes to the file directly, so that path and its gotchas were removed. See CHANGELOG 2.0.0.
+Versions 2.x kept the conventions in a "Configured design patterns" section here and asked two
+setup questions each session. They now live in the `cadenceux` pack, which ADK applies in
+layers; this skill's copy is `references/cadenceux-pack/`. See CHANGELOG 3.0.0.
 </details>
 
-## Platform differences
+<details>
+<summary>Clipboard XML delivery (retired in 2.0.0)</summary>
 
-Steps unsupported on a client (FileMaker Go, WebDirect, Server, Data API) are skipped and
-return error 3. Branch with `Get ( SystemPlatform )` or `Get ( Device )` where behaviour must
-differ; check each step's support matrix in `claris-filemaker-pro`.
-
-## Configured functions
-
-Project-specific limits on which reference-skill functions are in scope. None are configured,
-so every lookup falls through to the reference skills.
+Versions 1.x generated `fmxmlsnippet` XML for a manual paste into Script Workspace. ADK writes
+to the file directly, so that path was removed.
+</details>
 
 ## Skill update self-check
 
 Once per session, on the first request this skill handles: fetch
-`https://github.com/CadenceUX/fmp-dev-design-patterns/raw/main/VERSION` and compare it with this skill's version
-(2.1.1). If newer, start the answer with:
+`https://github.com/CadenceUX/fmp-dev-design-patterns/raw/main/VERSION` and compare it with
+this skill's version (3.0.0). If newer, start the answer with:
 
 > ⚠️ **Skill update available:** this skill is v[installed]; v[latest] is at
 > https://github.com/CadenceUX/fmp-dev-design-patterns/releases
 
 Skip silently if the fetch fails. If the skill was installed as a plugin, suggest
-`claude plugin update` (or the Plugins page on claude.ai) instead. If `fmp-dev-orchestrator` is
-installed, skip this check: its stack check covers every CadenceUX skill, plus Claris ADT,
-FileMaker Pro and the ADT project.
+`claude plugin update` (or the Plugins page on claude.ai) instead. If `fmp-dev-orchestrator`
+is installed, skip this check: its stack check covers every CadenceUX skill.
+
+## Relationship to other skills
+
+- **ADK's `filemaker-standards`** owns how layers combine and the Baseline. This skill owns the
+  CadenceUX layer and the method for deriving a client's. Where they disagree on how layers
+  work, ADK's skill wins.
+- **`cadenceux-filemaker-standards`** (the pack plugin) is the published copy of
+  `references/cadenceux-pack/`. Change both in the same release; the pack's version moves with
+  any rule change.
+- **`claris-filemaker-pro`** owns step and function syntax and platform support.
 
 ## Licence
 

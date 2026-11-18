@@ -1,8 +1,8 @@
 {
   "name": "fmp-dev-design-patterns",
   "displayName": "FileMaker Design Patterns",
-  "version": "2.1.1",
-  "description": "Scripting conventions and design patterns for Claris FileMaker: boilerplate, error handling, JSON parameters, transactions, AI steps, naming and anti-patterns, with scripts written into the file through the Claris Agentic Development Toolkit (ADT).",
+  "version": "3.0.0",
+  "description": "Scripting conventions and design patterns for Claris FileMaker, with CadenceUX's conventions as the cadenceux standards pack for Claris's FileMaker Agentic Development Kit (ADK): writing and reviewing scripts, error handling, JSON parameters and results, transactions, AI steps, and deriving a client's own standards pack.",
   "author": {
     "name": "Darrin Southern",
     "url": "https://cadenceux.com.au"
@@ -15,7 +15,8 @@
     "claris",
     "scripting",
     "design-patterns",
-    "adt"
+    "adk",
+    "standards"
   ],
   "skills": [
     "./"
