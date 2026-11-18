@@ -1,7 +1,7 @@
 {
   "skill": "fmp-dev-design-patterns",
   "version": "3.0.0",
-  "notes": "Grade each answer against must / must_not. mode=adt assumes the Claris ADT plugin is installed.",
+  "notes": "Grade each answer against must / must_not. mode=adk assumes the Claris ADK plugin is installed.",
   "cases": [
     {
       "id": "write-script-adk",
@@ -61,7 +61,7 @@
       "prompt": "(First request this session; the repo's VERSION file says a newer release exists.) Use fmp-dev-design-patterns for my next task.",
       "must": [
         "fetches the repo VERSION once and starts the answer with the skill-update notice",
-        "skips the check when fmp-dev-orchestrator is installed"
+        "skips the check when cadenceux-dx is installed"
       ],
       "must_not": [
         "repeats the notice later in the session",
