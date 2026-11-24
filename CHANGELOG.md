@@ -2,6 +2,20 @@
 
 (Named `fmp-dev-gate` through v1.2 — renamed at v1.3.)
 
+## [3.0.2] — 2026-11-24
+
+Claris's FileMaker Agentic Development Kit (ADK) 0.17.0. No change to what the skill does.
+
+### Changed
+
+- `references/baseline-summary.md` checked against ADK 0.17.0: ADK's built-in Baseline is
+  unchanged from 0.16.0.
+
+### Verified
+
+- `adk standards list` in ADK 0.17.0 shows `cadenceux 1.0.0` and `default 0.17.0`.
+- `validate_skill.py` clean.
+
 ## [3.0.1] — 2026-11-19
 
 `cadenceux-dx` replaces the retired `fmp-dev-orchestrator`, and Claris's public FileMaker

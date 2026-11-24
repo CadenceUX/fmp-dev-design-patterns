@@ -18,7 +18,7 @@ compatibility: >-
   the patterns themselves work anywhere.
 metadata:
   author: Darrin Southern, CadenceUX
-  version: "3.0.1"
+  version: "3.0.2"
 ---
 
 # FileMaker design patterns
@@ -149,7 +149,7 @@ to the file directly, so that path was removed.
 
 Once per session, on the first request this skill handles: fetch
 `https://github.com/CadenceUX/fmp-dev-design-patterns/raw/main/VERSION` and compare it with
-this skill's version (3.0.1). If newer, start the answer with:
+this skill's version (3.0.2). If newer, start the answer with:
 
 > ⚠️ **Skill update available:** this skill is v[installed]; v[latest] is at
 > https://github.com/CadenceUX/fmp-dev-design-patterns/releases

@@ -3,7 +3,8 @@
 The `cadenceux` pack states only where CadenceUX differs from ADK's built-in Baseline. With
 ADK installed, ADK's `filemaker-standards` skill carries the Baseline itself and is the
 authority. Without ADK, apply this summary first, then the pack's files over it. It is a
-summary in this skill's words, checked against ADK 0.16.0 (November 2026).
+summary in this skill's words, checked against ADK 0.17.0 (November 2026; ADK's Baseline is
+unchanged from 0.16.0).
 
 ## Contents
 - Naming the pack doesn't change
